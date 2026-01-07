@@ -171,8 +171,13 @@ public class CatalogBackupRestoreTasklet extends AbstractCatalogBackupRestoreTas
                             dd.get(Paths.path("workspaces", ws.getName())).dir());
                     backupRestoreAdditionalResources(wsDd.getResourceStore(), targetWorkspacesFolder.get(ws.getName()));
 
-                    // Backup Style SLDs
+                    // Backup Workspace Style XMLs and SLDs
                     for (StyleInfo sty : getCatalog().getStylesByWorkspace(ws)) {
+                        // Write the style.xml metadata file
+                        Resource wsStyleFolder = BackupUtils.dir(targetWorkspacesFolder.get(ws.getName()), "styles");
+                        doWrite(sty, wsStyleFolder, sty.getName() + ".xml");
+
+                        // Copy the SLD file
                         Resource styResource = wsDd.get(Paths.path("styles", sty.getFilename()));
                         if (Resources.exists(styResource)) {
                             Resources.copy(
